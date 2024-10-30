@@ -1,0 +1,73 @@
+:root {
+    --charcoal: #333; /* Color oscuro del menú superior */
+    --pale-oscuro: #CFCFCF; /* Color de fondo de "Configurar Firmas" */
+    --white: #fff; /* Color blanco del contenedor principal */
+    --emerald: #218f8b; /* Color de los botones */
+}
+
+body {
+    background-color: #CFCFCF; /* Fondo general de la aplicación */
+    text-size-adjust: 100%; /* Evita que los navegadores cambien el tamaño del texto automáticamente */
+}
+
+.custom-bg {
+    background-color: var(--charcoal); /* Fondo del menú superior */
+}
+.navbar-brand {
+    color: white; /* Cambia el color del texto a blanco */
+}
+
+.navbar .nav-link {
+    color: var(--white); /* Color blanco para los enlaces del navbar */
+}
+
+    .navbar .nav-link:hover {
+        color: #d1d1d1; /* Color al pasar el mouse sobre los enlaces */
+    }
+
+.user-initials {
+    background-color: var(--emerald); /* Color del círculo de iniciales */
+    color: var(--white); /* Color del texto en el círculo */
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%; /* Hace el div circular */
+}
+
+.container-main {
+    background-color: var(--white); /* Fondo blanco del contenedor principal */
+    border-radius: 8px;
+    padding: 10px;
+}
+.container-main {
+    background-color: var(--white); /* Fondo blanco del contenedor principal */
+    border-radius: 8px;
+    padding: 10px;
+    margin-right: 10px; /* Espacio de 10px a la derecha */
+}
+
+
+.btn-primary, .btn-secondary {
+    background-color: var(--emerald); /* Color de los botones */
+    border-color: var(--emerald);
+}
+
+    .btn-primary:hover, .btn-secondary:hover {
+        background-color: #1a6b69; /* Color más oscuro para hover */
+    }
+
+.table th, .table td {
+    color: var(--charcoal); /* Color de texto en la tabla */
+}
+
+.upload-area {
+    transition: background-color 0.3s ease;
+}
+
+
+    .upload-area.drag-over {
+        background-color: #f0f8ff; /* Cambia el color de fondo cuando se arrastra un archivo sobre el área */
+        border-color: #007bff; /* Cambia el color del borde */
+    }

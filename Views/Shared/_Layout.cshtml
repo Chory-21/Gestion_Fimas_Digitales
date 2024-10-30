@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - VisionSign</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+        /* Estilos personalizados */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .navbar {
+            background-color: #333; /* Color oscuro del menú superior */
+            padding: 0.5rem;
+            z-index: 1000; /* Asegura que la navbar esté siempre en la parte superior */
+        }
+
+        /* Barra lateral que ocupa el 100% de la altura disponible */
+        .sidebar {
+            width: 70px; /* Ancho de la barra lateral */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh; /* Ocupa toda la altura de la ventana */
+            background-color: transparent;
+            position: fixed; /* Permite que la barra lateral sea fija */
+            top: 0; /* Alineado en la parte superior */
+            left: 0; /* Alineado en la parte izquierda */
+            transition: width 0.3s; /* Transición suave al cambiar de ancho */
+        }
+
+        /* Contenedor blanco que envuelve los íconos */
+        .icon-container {
+            width: 100%; /* Ocupa todo el ancho de la barra lateral */
+            background-color: #fff; /* Color blanco del contenedor principal */
+            border-radius: 0; /* Eliminar bordes redondeados */
+            display: flex;
+            flex-direction: column; /* Coloca los íconos en vertical */
+            align-items: center;
+            padding: 0; /* Eliminar padding */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex-grow: 1;
+            height: calc(100vh - 56px); /* Ajustar altura para el navbar */
+            border-right: 2px solid black; /* Bordes negros a la derecha */
+        }
+
+        .sidebar .nav-link {
+            color: #218f8b; /* Color de los iconos (emerald) */
+            font-size: 1.2rem;
+            padding: 15px 0; /* Padding superior e inferior */
+            text-align: center;
+            transition: background-color 0.3s, color 0.3s; /* Transición suave */
+            width: 100%; /* Asegura que el enlace ocupe todo el ancho */
+        }
+
+            .sidebar .nav-link:hover {
+                background-color: #CFCFCF; /* Color oscuro de font */
+                border-radius: 5px;
+                color: #1b6b68; /* Color más oscuro al pasar el mouse */
+            }
+
+        .user-initials {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%; /* Asegura que sea circular */
+            background-color: #218f8b; /* Fondo del círculo, ajustado a un color diferente */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #fff; /* Color blanco para las iniciales */
+        }
+
+        .config-title {
+            font-size: 1.5rem;
+            padding: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Estilos para el menú desplegable */
+        .dropdown-menu {
+            position: absolute;
+            top: 56px; /* Alineado con la barra de navegación */
+            left: 0;
+            width: 100%; /* Igualar al ancho de la barra lateral */
+            background-color: rgba(0, 0, 0, 0.8); /* Fondo negro transparente */
+            border: 2px solid black; /* Bordes negros */
+            border-radius: 0; /* Sin bordes redondeados */
+            display: none; /* Ocultar por defecto */
+            z-index: 1000; /* Asegura que el menú esté en la parte superior */
+        }
+
+            .dropdown-menu.show {
+                display: block; /* Mostrar el menú cuando tiene la clase .show */
+            }
+
+        .dropdown-header {
+            color: white; /* Color del texto del encabezado */
+            padding: 10px; /* Espaciado para el encabezado */
+            font-weight: bold; /* Negrita para el encabezado */
+            text-align: center; /* Centrar el texto */
+        }
+
+        .dropdown-menu .nav-link {
+            color: white; /* Color blanco para los enlaces del menú */
+            padding: 10px 15px; /* Espaciado para los enlaces */
+            display: flex; /* Para alinear icono y texto */
+            align-items: center; /* Centrar verticalmente */
+        }
+
+            .dropdown-menu .nav-link i {
+                margin-right: 10px; /* Espacio entre el icono y el texto */
+            }
+
+        /* Mostrar siempre el botón de hamburguesa */
+        .navbar-toggler {
+            display: block !important; /* Siempre mostrar el botón */
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" onclick="toggleMenu()" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" href="#" style="margin-left: 10px;">VisionSign - BDO OUTSOURCING S.A.C.</a>
+                <div class="d-flex align-items-center">
+                    <span class="user-name me-2" style="color: white;">@User.Identity.Name</span> <!-- Muestra el nombre de usuario -->
+                    <div class="user-initials">@(User.Identity.Name.Substring(0, 2).ToUpper())</div> <!-- Iniciales -->
+                    <form asp-action="Logout" asp-controller="Account" method="post" style="display: inline;">
+                        @Html.AntiForgeryToken() <!-- Protección CSRF -->
+                        <button type="submit" class="btn btn-link text-white ms-2" title="Cerrar sesión">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+
+
+    <!-- Contenedor principal -->
+    <div class="d-flex">
+        <!-- Barra lateral -->
+        <nav class="sidebar">
+            <div class="icon-container" id="iconContainer">
+                <a class="nav-link" href="#" title="Dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                </a>
+                <a class="nav-link" href="#" title="Firmas Digitales">
+                    <i class="fas fa-signature"></i>
+                </a>
+                <a class="nav-link" href="#" title="Configuración">
+                    <i class="fas fa-cogs"></i>
+                </a>
+                <a class="nav-link" href="#" title="Usuarios">
+                    <i class="fas fa-users"></i>
+                </a>
+                <!-- Añade más iconos si es necesario -->
+            </div>
+        </nav>
+
+        <!-- Menú desplegable -->
+        <div class="dropdown-menu" id="dropdownMenu">
+            <div class="dropdown-header">Opciones</div> <!-- Encabezado para el menú -->
+            <a class="nav-link" href="#" title="Dashboard">
+                <i class="fas fa-tachometer-alt"></i>
+                Dashboard
+            </a>
+            <a class="nav-link" href="#" title="Firmas Digitales">
+                <i class="fas fa-signature"></i>
+                Firmas Digitales
+            </a>
+            <a class="nav-link" href="#" title="Configuración">
+                <i class="fas fa-cogs"></i>
+                Configuración
+            </a>
+            <a class="nav-link" href="#" title="Usuarios">
+                <i class="fas fa-users"></i>
+                Usuarios
+            </a>
+        </div>
+
+        <!-- Contenido principal -->
+        <main class="main-content flex-grow-1" style="margin-left: 70px;">
+            <!-- Ajusta el margen izquierdo para evitar solapamiento -->
+            <!-- Título de Configuración sin barra adicional -->
+            <div class="config-title">
+                <h2>Configuración de Firmas</h2>
+            </div>
+
+            <!-- Contenido de la vista específica -->
+            <div class="p-4">
+                @RenderBody()
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function toggleMenu() {
+            const dropdownMenu = document.getElementById("dropdownMenu");
+            dropdownMenu.classList.toggle("show"); // Alternar la clase .show para mostrar/ocultar el menú
+        }
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

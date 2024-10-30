@@ -1,0 +1,167 @@
+﻿@model Gestion_Fimas_Digitales.Models.FirmaDigital
+
+@{
+    ViewData["Title"] = "Editar Firma";
+    Layout = null; // Para evitar incluir el layout completo
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>@ViewData["Title"]</title>
+
+    <style>
+        /* Variables de colores */
+        :root {
+            --charcoal: #333; /* Color oscuro del menú superior */
+            --pale-oscuro: #CFCFCF; /* Color oscuro de fuente */
+            --white: #fff; /* Color blanco del contenedor principal */
+            --emerald: #218f8b; /* Color de los botones */
+        }
+
+        /* Estilo para el fondo de la página */
+        body {
+            background-color: var(--pale-oscuro); /* Color de fondo suave */
+            color: var(--charcoal); /* Color de texto principal */
+        }
+
+        /* Estilo para el contenedor del formulario */
+        .form-container {
+            background-color: var(--white); /* Fondo blanco para el formulario */
+            border-radius: 8px; /* Bordes redondeados */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para el efecto de elevación */
+            padding: 20px; /* Espaciado interno */
+            margin: 20px auto; /* Margen superior e inferior, centrado */
+            max-width: calc(100% - 20px); /* Ancho máximo del contenedor con márgenes de 10dp a cada lado */
+        }
+
+        /* Estilo para los botones */
+        .btn-primary {
+            background-color: var(--emerald); /* Color de fondo del botón */
+            border-color: var(--emerald); /* Color del borde del botón */
+        }
+
+        /* Estilo para los textos dentro de los formularios */
+        .form-label {
+            color: var(--charcoal); /* Color de las etiquetas del formulario */
+        }
+
+        .file-name {
+            font-style: italic; /* Estilo para los nombres de archivo */
+            color: var(--charcoal); /* Color de texto */
+            margin-top: 5px; /* Espaciado superior */
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10 form-container">
+                <h3 class="text-center mb-4">Editar Firma</h3>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <form asp-action="Edit" method="post" class="row g-3">
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                            <div class="col-12">
+                                <label asp-for="TipoFirma" class="form-label">Tipo de Firma</label>
+                                <select asp-for="TipoFirma" class="form-select input-size" required>
+                                    <option value="">Seleccione una opción</option>
+                                    <option value="1">Firma Digital</option>
+                                    <option value="2">Rúbrica Escaneada</option>
+                                    <option value="3">Firma Electrónica</option>
+                                </select>
+                                <span asp-validation-for="TipoFirma" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="RazonSocial" class="form-label">Razón Social / Persona</label>
+                                <input asp-for="RazonSocial" class="form-control input-size" placeholder="BDO Outsourcing S.A." required />
+                                <span asp-validation-for="RazonSocial" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="RepresentanteLegal" class="form-label">Representante Legal</label>
+                                <input asp-for="RepresentanteLegal" class="form-control input-size" placeholder="Renato Copolla" required />
+                                <span asp-validation-for="RepresentanteLegal" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="EmpresaAcreditadora" class="form-label">Empresa Acreditadora</label>
+                                <input asp-for="EmpresaAcreditadora" class="form-control input-size" placeholder="CAMEFIRMA" required oninput="this.value = this.value.toUpperCase()" />
+                                <span asp-validation-for="EmpresaAcreditadora" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="FechaEmision" class="form-label">Fecha Emisión</label>
+                                <input asp-for="FechaEmision" type="date" class="form-control input-size" required />
+                                <span asp-validation-for="FechaEmision" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="FechaVencimiento" class="form-label">Fecha Vencimiento</label>
+                                <input asp-for="FechaVencimiento" type="date" class="form-control input-size" required />
+                                <span asp-validation-for="FechaVencimiento" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Ruta Rubrica</label>
+                                <input type="file" id="rutaRubricaInput" class="form-control input-size" accept=".jpg, .png" />
+                                <input type="hidden" asp-for="RutaRubrica" id="rutaRubrica" />
+                                <span asp-validation-for="RutaRubrica" class="text-danger"></span>
+                                <span id="rutaRubricaNombre" class="file-name"></span> <!-- Nombre del archivo de la rúbrica -->
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Certificado Digital</label>
+                                <input type="file" id="certificadoDigitalInput" class="form-control input-size" accept="*" />
+                                <input type="hidden" asp-for="CertificadoDigital" id="certificadoDigital" />
+                                <span asp-validation-for="CertificadoDigital" class="text-danger"></span>
+                                <span id="certificadoDigitalNombre" class="file-name"></span> <!-- Nombre del archivo del certificado -->
+                            </div>
+
+                            <div class="col-12 text-center mt-4">
+                                <button type="submit" class="btn btn-primary w-100" id="submitButton">Actualizar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.getElementById('rutaRubricaInput').addEventListener('change', function () {
+            const file = this.files[0];
+            const fileNameSpan = document.getElementById('rutaRubricaNombre');
+            if (file) {
+                fileNameSpan.textContent = file.name; // Mostrar el nombre del archivo
+            } else {
+                fileNameSpan.textContent = ''; // Si no hay archivo, dejar vacío
+            }
+        });
+
+        document.getElementById('certificadoDigitalInput').addEventListener('change', function () {
+            const file = this.files[0];
+            const fileNameSpan = document.getElementById('certificadoDigitalNombre');
+            if (file) {
+                fileNameSpan.textContent = file.name; // Mostrar el nombre del archivo
+            } else {
+                fileNameSpan.textContent = ''; // Si no hay archivo, dejar vacío
+            }
+        });
+    </script>
+
+    @section Scripts {
+        @Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+</body>
+</html>

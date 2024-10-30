@@ -1,0 +1,233 @@
+﻿@model IEnumerable<Gestion_Fimas_Digitales.Models.FirmaDigital>
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Lista de Firmas Digitales";
+
+    // Definiendo variables de color
+    var charcoal = "#333";       // Color oscuro del menú superior
+    var paleOscuro = "#CFCFCF";  // Color oscuro de font
+    var white = "#fff";          // Color blanco del contenedor principal
+    var emerald = "#218f8b";     // Color de los botones
+
+    <style>
+        /* Estilo para el contenedor principal */
+        .main-container {
+            background-color: rgba(255, 255, 255, 0.95); /* Fondo blanco semitransparente */
+            padding: 20px 30px; /* Espaciado alrededor */
+            border-radius: 10px; /* Bordes redondeados */
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada para el efecto flotante */
+            max-width: 95%; /* Asegura que el contenedor ocupe más espacio horizontal */
+            margin: auto; /* Centrar horizontalmente */
+            margin-bottom: 20px; /* Espacio en la parte inferior para mostrar el fondo principal */
+            max-height: 90vh; /* Deja un margen vertical */
+            overflow-y: auto; /* Habilitar desplazamiento si es necesario */
+            background-color: @white; /* Aplicando color blanco al contenedor */
+        }
+
+        .actions-container {
+            display: flex; /* Usar flexbox para organizar los elementos */
+            flex-direction: column; /* Organizar en columna */
+            align-items: flex-end; /* Alinear todo a la derecha */
+            gap: 8px; /* Espacio entre los botones */
+        }
+
+        .table-responsive {
+            overflow-y: auto;
+            max-height: 100%;
+        }
+
+        /* Estilos de la tabla */
+        table {
+            font-size: 20px; /* Aumentar el tamaño de la fuente de la tabla */
+        }
+
+        th, td {
+            padding: 30px; /* Aumentar el espaciado de las celdas */
+            text-align: left; /* Alinear el texto a la izquierda */
+        }
+
+        th {
+            background-color: @paleOscuro; /* Color de fondo de los encabezados */
+            color: @charcoal; /* Color de texto de los encabezados */
+        }
+
+        .btn {
+            background-color: @emerald; /* Color de fondo de los botones */
+            color: @white; /* Color de texto de los botones */
+            padding: 6px 12px; /* Reducir el padding para hacerlos más pequeños */
+            font-size: 0.9rem; /* Tamaño de fuente más pequeño */
+        }
+
+            .btn.btn-primary {
+                padding: 8px 16px; /* Padding ajustado para el botón de agregar */
+                font-size: 1rem; /* Tamaño de fuente ajustado */
+            }
+
+        /* Ajustar el tamaño del botón de exportar */
+        .btn-outline-secondary {
+            padding: 8px 16px; /* Padding ajustado para el botón de exportar */
+            font-size: 1rem; /* Tamaño de fuente ajustado */
+        }
+
+        /* Botón de tres puntos sin contorno */
+        .options-icon {
+            border: none;
+            background: transparent;
+            color: #000;
+        }
+
+            .options-icon i {
+                font-size: 1.2rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+        /* Menú desplegable personalizado */
+        .custom-dropdown-menu {
+            padding: 0;
+            border: 1px solid rgba(0, 0, 0, 0.1); /* Borde sutil */
+            border-radius: 4px;
+            min-width: auto;
+            width: auto;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+        }
+
+            .custom-dropdown-menu .dropdown-item {
+                padding: 4px 8px; /* Ajuste del espacio para que sea compacto */
+                background-color: #fff;
+                color: #000;
+                white-space: nowrap; /* Evita el salto de línea */
+            }
+
+                .custom-dropdown-menu .dropdown-item:hover {
+                    background-color: #f0f0f0; /* Color de fondo al pasar el mouse */
+                }
+
+
+
+        .form-control {
+            padding: 6px 12px; /* Hacer la celda de búsqueda del mismo tamaño que los botones */
+            font-size: 0.9rem; /* Tamaño de fuente igual que los botones */
+            min-width: 250px; /* Ancho mínimo para que no se vea demasiado pequeño */
+        }
+    </style>
+}
+
+<div class="main-container d-flex flex-column justify-content-start align-items-start min-vh-100">
+    <!-- Título y botón Agregar Nueva Firma -->
+    <div class="d-flex justify-content-between align-items-start mb-4 w-100">
+        <div>
+            <h3 class="mb-0">Lista de Certificados por Empresa</h3>
+            <!-- Botón de Agregar alineado arriba -->
+            <a asp-action="Create" class="btn btn-primary btn-sm mt-2">
+                <i class="fas fa-plus"></i> Agregar Nueva Firma
+            </a>
+        </div>
+    </div>
+
+    <!-- Contenedor para Buscar y Exportar debajo de Agregar -->
+    <div class="actions-container mb-4 w-100">
+        <form asp-action="Index" method="get" class="d-flex align-items-center mb-2">
+            <input type="text" name="search" class="form-control form-control-sm me-2" placeholder="Buscar por Razón Social o Representante">
+            <button type="submit" class="btn btn-primary btn-sm">Buscar</button> <!-- Botón de búsqueda -->
+        </form>
+        <a asp-action="ExportToExcel" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-file-excel"></i> Exportar a Excel
+        </a>
+    </div>
+
+    <!-- Tabla de datos ocupando el máximo espacio disponible -->
+    <div class="table-responsive flex-grow-1">
+        <table class="table table-bordered table-hover w-100">
+            <thead class="table-light">
+                <tr>
+                    <th><input type="checkbox" class="select-all" /></th>
+                    <th>Tipo de Firma</th>
+                    <th>Razón Social</th>
+                    <th>Representante Legal</th>
+                    <th>Empresa Acreditadora</th>
+
+                    <th>Fecha Emisión</th>
+                    <th>Fecha Vencimiento</th>
+                    <th>Rúbrica Escaneada</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td><input type="checkbox" class="row-select" /></td>
+                        <td>@(item.TipoFirma == '1' ? "Firma Digital" : item.TipoFirma == '2' ? "Rúbrica Escaneada" : "Firma Electrónica")</td>
+                        <td>@item.RazonSocial</td>
+                        <td>@item.RepresentanteLegal</td>
+                        <td>@item.EmpresaAcreditadora</td>
+                        <td>@item.FechaEmision.ToString("dd/MM/yyyy")</td>
+                        <td>@item.FechaVencimiento.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.RutaRubrica))
+                            {
+                                <span style="color: green;">Correcto</span>
+                            }
+                            else
+                            {
+                                <span>No disponible</span>
+                            }
+                        </td>
+
+                        <td class="text-center">
+                            <button class="btn p-0 options-icon" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu custom-dropdown-menu" style="position: absolute; left: 100%; top: 0;">
+                                <li><a class="dropdown-item text-dark" asp-action="Edit" asp-route-id="@item.Id">Editar</a></li>
+                                <li><a class="dropdown-item text-danger" asp-action="Delete" asp-route-id="@item.Id">Eliminar</a></li>
+                            </ul>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css">-->
+    <script>
+        // Dropzone initialization removed as it's not needed in the Index view
+        $(document).ready(function () {
+            // Date validation
+            var fechaEmision = $('#FechaEmision');
+            var fechaVencimiento = $('#FechaVencimiento');
+            if (fechaEmision.length && fechaVencimiento.length) {
+                fechaEmision.change(function () {
+                    fechaVencimiento.attr('min', $(this).val());
+                });
+            }
+
+            // Form submission
+            var firmaForm = $('#firmaForm');
+            if (firmaForm.length) {
+                firmaForm.submit(function (e) {
+                    e.preventDefault();
+                    var formData = new FormData(this);
+                    $.ajax({
+                        url: $(this).attr('action'),
+                        type: 'POST',
+                        data: formData,
+                        success: function (result) {
+                            $('#firmaModal').modal('hide');
+                            location.reload();
+                        },
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    });
+                });
+            }
+        });
+    </script>
+}
